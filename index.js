@@ -11,79 +11,83 @@ module.exports = function (options) {
       hasRecorded: false
     });
 
-    /*
-      SIGNALS
-    */
-    function play(arg) {
-      controller.recorder.seek(0);
-      arg.module.state.merge([], {
-        isPlaying: true
-      });
-      controller.recorder.play();
-    }
-    module.signal('played', [play]);
+    module.signals({
+      played: [
+        function play(arg) {
+          arg.module.services.seek(0);
+          arg.module.state.merge([], {
+            isPlaying: true
+          });
+          arg.module.services.play();
+        }
+      ],
+      recorded: [
+        function record(arg) {
+          arg.module.state.set(['isRecording'], true);
+          arg.module.services.record({
+            paths: arg.input.paths
+          });
+        }
+      ],
+      stopped: [
+        function stop(arg) {
+          arg.module.state.merge([], {
+            isPlaying: false,
+            isRecording: false,
+            isPaused: false,
+            hasRecorded: true
+          });
+          arg.module.services.stop();
+        }
+      ],
+      paused: [
+        function pause(arg) {
+          arg.module.state.merge([], {
+            isPlaying: false,
+            isPaused: true
+          });
+          arg.module.services.pause();
+        }
+      ],
+      resumed: [
+        function resume(arg) {
+          arg.module.state.merge([], {
+            isPlaying: true,
+            isPaused: false
+          });
+          arg.module.services.seek(arg.module.services.getCurrentSeek());
+          arg.module.services.play();
+        }
+      ]
+    });
 
-    function record(arg) {
-      arg.module.state.set(['isRecording'], true);
-      controller.recorder.record({
-        paths: arg.input.paths
-      });
-    }
-    module.signal('recorded', [record]);
+    var recorder = controller.getRecorder();
+    module.services({
+      getCurrentSeek: function() {
+        return recorder.getCurrentSeek();
+      },
+      getRecording: function() {
+        return recorder.getRecording();
+      },
+      loadRecording: function(recording) {
+        return recorder.loadRecording(recording);
+      },
+      record: function(options) {
+        return recorder.record(options);
+      },
+      play: function() {
+        return recorder.play();
+      },
+      stop: function() {
+        return recorder.stop();
+      },
+      pause: function() {
+        return recorder.pause();
+      },
+      seek: function(duration) {
+        return recorder.seek(duration);
+      }
+    });
 
-    function stop(arg) {
-      arg.module.state.merge([], {
-        isPlaying: false,
-        isRecording: false,
-        isPaused: false,
-        hasRecorded: true
-      });
-      controller.recorder.stop();
-    }
-    module.signal('stopped', [stop]);
-
-    function pause(arg) {
-      arg.module.state.merge([], {
-        isPlaying: false,
-        isPaused: true
-      });
-      controller.recorder.pause();
-    }
-    module.signal('paused', [pause]);
-
-    function resume(arg) {
-      arg.module.state.merge([], {
-        isPlaying: true,
-        isPaused: false
-      });
-      controller.recorder.seek(controller.recorder.getCurrentSeek());
-      controller.recorder.play();
-    }
-    module.signal('resumed', [resume]);
-
-    /*
-      SERVICES
-    */
-    module.service('getRecording', function () {
-      return controller.recorder.getRecording();
-    });
-    module.service('loadRecording', function () {
-      return controller.recorder.loadRecording();
-    });
-    module.service('record', function (options) {
-      return controller.recorder.record(options);
-    });
-    module.service('play', function () {
-      return controller.recorder.play();
-    });
-    module.service('stop', function () {
-      return controller.recorder.stop();
-    });
-    module.service('pause', function () {
-      return controller.recorder.pause();
-    });
-    module.service('seek', function (duration) {
-      return controller.recorder.seek(duration);
-    });
   };
 }
