@@ -1,5 +1,5 @@
 var React = require('react');
-var Cerebral = require('cerebral-react').Mixin;
+var Cerebral = require('cerebral-view-react').Mixin;
 
 module.exports = React.createClass({
   mixins: [Cerebral],
