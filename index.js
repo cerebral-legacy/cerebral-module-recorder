@@ -4,12 +4,13 @@ module.exports = function (options) {
 
     module.alias('cerebral-module-recorder');
 
-    module.state({
-      isRecording: false,
-      isPlaying: false,
-      isPaused: false,
-      hasRecorded: false
-    });
+    var state = options.state || {};
+    state.isRecording = false;
+    state.isPlaying = false;
+    state.isPaused = false;
+    state.hasRecorded = false;
+
+    module.state(state);
 
     module.signals({
       played: [
