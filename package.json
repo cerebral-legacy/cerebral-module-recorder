@@ -1,30 +1,44 @@
 {
   "name": "cerebral-module-recorder",
-  "version": "0.4.1",
+  "version": "0.0.0-semantically-released",
   "description": "A state recorder for Cerebral",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cerebral/cerebral-module-recorder.git"
+    "url": "https://github.com/cerebral/cerebral-module-recorder.git"
   },
   "keywords": [
     "cerebral",
     "record",
     "state"
   ],
-  "author": "Christian Alfoni",
-  "license": "ISC",
+  "author": "Christian Alfoni <christianalfoni@gmail.com>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/cerebral/cerebral-module-recorder/issues"
   },
   "homepage": "https://github.com/cerebral/cerebral-module-recorder#readme",
   "devDependencies": {
-    "babel-loader": "^5.4.0",
-    "webpack": "^1.12.10",
-    "react": "^0.14.6",
-    "cerebral-view-react": "^0.10.1"
+    "commitizen": "^2.5.0",
+    "conventional-changelog": "0.0.17",
+    "cz-customizable": "^2.7.1",
+    "ghooks": "^1.0.3",
+    "semantic-release": "^4.3.5",
+    "validate-commit-msg": "^1.1.1"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-customizable"
+    },
+    "ghooks": {
+      "commit-msg": "validate-commit-msg"
+    }
+  },
+  "release": {
+    "analyzeCommits": "./sr-prerelease.js"
   }
 }
