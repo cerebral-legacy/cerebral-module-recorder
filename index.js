@@ -82,7 +82,11 @@ module.exports = function (options) {
 
       // If we are recording over the previous stuff, go back to start
       if (currentRecording) {
-        this.resetState()
+        currentSeek = 0
+        duration = 0
+        ended = null
+        startSeek = 0
+        controller.emit('seek', 0, currentRecording)
       }
 
       var paths = options.paths || [[]]
