@@ -176,9 +176,9 @@ module.exports = function (options) {
       seek: seek
     }
 
-    module.state(state)
-    module.signals(signals)
-    module.services(services)
+    module.addState(state)
+    module.addSignals(signals)
+    module.addServices(services)
 
     controller.on('signalTrigger', onSignalTrigger)
     controller.on('signalStart', onSignalStart)
