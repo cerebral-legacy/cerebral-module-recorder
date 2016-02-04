@@ -18,9 +18,11 @@ module.exports = function (options) {
     var isCatchingUp = false
     var startSeek = 0
     var catchup = null
+    var lastSignal = null
 
     // Runs the signal synchronously
     var triggerSignal = function (signal) {
+      lastSignal = signal
       var signalName = signal.name.split('.')
       var signalMethodPath = signalMethods
       while (signalName.length) {
@@ -157,6 +159,10 @@ module.exports = function (options) {
       if (isRecording) addSignal(args.signal)
     }
 
+    function getLastSignal () {
+      return lastSignal
+    }
+
     module.alias(MODULE)
 
     var state = options.state || {}
@@ -167,6 +173,7 @@ module.exports = function (options) {
 
     var services = {
       getCurrentSeek: getCurrentSeek,
+      getLastSignal: getLastSignal,
       getRecording: getRecording,
       loadRecording: loadRecording,
       record: record,
