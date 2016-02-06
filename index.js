@@ -30,6 +30,7 @@ module.exports = function (options) {
       }
       signalMethodPath(signal.input, {
         isRecorded: !isCatchingUp,
+        isSync: true,
         branches: isCatchingUp && signal.branches
       })
     }
