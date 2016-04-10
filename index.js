@@ -30,7 +30,7 @@ module.exports = function (options) {
       }
       signalMethodPath(signal.input, {
         isRecorded: !isCatchingUp,
-        isSync: true,
+        immediate: true,
         branches: isCatchingUp && signal.branches
       })
     }
@@ -150,7 +150,10 @@ module.exports = function (options) {
     function onSignalTrigger (event) {
       var signal = event.signal
 
-      if (isPlaying && !signal.options.isRecorded) {
+      if (
+        (isPlaying && signal.options && !signal.options.isRecorded) ||
+        (isPlaying && event.options && !event.options.isRecorded)
+      ) {
         signal.preventSignalRun()
         console.warn('Cerebral - Recording is replaying, ignored signal ' + signal.name)
       }

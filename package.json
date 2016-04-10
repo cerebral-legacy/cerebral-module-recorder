@@ -4,7 +4,10 @@
   "description": "A state recorder for Cerebral",
   "main": "index.js",
   "scripts": {
-    "test": "standard",
+    "pretest": "standard",
+    "test": "nodeunit tests",
+    "coverage": "istanbul cover nodeunit tests",
+    "postcoverage": "cat ./coverage/lcov.info | coveralls",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
@@ -26,14 +29,17 @@
     "cerebral": "^0.33.8",
     "commitizen": "^2.5.0",
     "conventional-changelog": "0.0.17",
-    "cz-customizable": "^2.7.1",
+    "coveralls": "^2.11.6",
+    "cz-customizable": "^2.7.0",
     "ghooks": "^1.0.3",
+    "istanbul": "^0.4.2",
+    "nodeunit": "^0.9.1",
     "semantic-release": "^4.3.5",
     "standard": "^5.4.1",
     "validate-commit-msg": "^1.1.1"
   },
   "peerDependencies": {
-    "cerebral": "^0.33.8"
+    "cerebral": "^0.33.31"
   },
   "config": {
     "commitizen": {
