@@ -125,7 +125,11 @@ suite['should play back recording'] = function (test) {
     setTimeout(function () {
       ctrl.getSignals().stop()
       setTimeout(function () {
-        ctrl.getSignals().replay()
+        try {
+          ctrl.getSignals().replay({}, {immediate: true})
+        } catch (e) {
+          console.log(e)
+        }
         setTimeout(function () {
           test.deepEqual(state, {foo: 'bar'})
           test.done()
