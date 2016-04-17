@@ -1,11 +1,12 @@
 var MODULE = 'cerebral-module-recorder'
 var signals = require('./signals')
+var mutationsProvider = require('cerebral/src/contextProviders/mutationsProvider')
 
 module.exports = function (options) {
   options = options || {}
   return function (module, controller) {
+    controller.addContextProvider(mutationsProvider)
     var signalMethods = controller.getSignals()
-
     var currentSeek = 0
     var currentRecording = null
     var durationTimer = null
@@ -28,9 +29,10 @@ module.exports = function (options) {
       while (signalName.length) {
         signalMethodPath = signalMethodPath[signalName.shift()]
       }
+
       signalMethodPath(signal.input, {
         isRecorded: !isCatchingUp,
-        isSync: true,
+        immediate: true,
         branches: isCatchingUp && signal.branches
       })
     }
@@ -149,8 +151,9 @@ module.exports = function (options) {
 
     function onSignalTrigger (event) {
       var signal = event.signal
+      var options = event.options
 
-      if (isPlaying && !signal.options.isRecorded) {
+      if (isPlaying && !options.isRecorded) {
         signal.preventSignalRun()
         console.warn('Cerebral - Recording is replaying, ignored signal ' + signal.name)
       }
