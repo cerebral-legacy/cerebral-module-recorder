@@ -392,4 +392,77 @@ suite['should resume a paused playback'] = function (test) {
   }, 100)
 }
 
+suite['should expose default signals'] = function (test) {
+  var initialState = {}
+  var state = initialState
+  var Model = function () {
+    return function (controller) {
+      controller.on('seek', function (seek, recording) {
+        state = initialState
+      })
+      return {
+        accessors: {
+          get: function () {
+            return state
+          },
+          merge: function () {
+            return state
+          }
+        },
+        mutators: {
+          set: function (path, value) {
+            state = {}
+            state[path.pop()] = value
+          }
+        }
+      }
+    }
+  }
+  var ctrl = Controller(Model())
+  ctrl.addModules({
+    recorder: Recorder()
+  })
+
+  ctrl.addSignals({
+    'test': {
+      chain: [
+        function (args) {
+          args.state.set('foo', args.input.foo)
+        }
+      ],
+      immediate: true
+    }
+  })
+  ctrl.getSignals().recorder.recorded()
+
+  setTimeout(function () {
+    ctrl.getSignals().test({
+      foo: 'bar'
+    })
+    setTimeout(function () {
+      ctrl.getSignals().test({
+        foo: 'bar2'
+      })
+      setTimeout(function () {
+        ctrl.getSignals().recorder.stopped()
+        setTimeout(function () {
+          ctrl.getSignals().recorder.played({}, {immediate: true})
+          test.deepEqual(state, {})
+          setTimeout(function () {
+            ctrl.getSignals().recorder.paused({}, {isRecorded: true, immediate: true})
+            test.deepEqual(state, {foo: 'bar'})
+            setTimeout(function () {
+              ctrl.getSignals().recorder.resumed()
+              setTimeout(function () {
+                test.deepEqual(state, {foo: 'bar2'})
+                test.done()
+              }, 100)
+            }, 100)
+          }, 150)
+        }, 100)
+      }, 100)
+    }, 100)
+  }, 100)
+}
+
 module.exports = { recorder: suite }

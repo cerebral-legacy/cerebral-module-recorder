@@ -1,43 +1,63 @@
-function play (arg) {
-  arg.module.services.seek(0)
-  arg.module.state.merge([], {
+var MODULE = 'cerebral-module-recorder'
+var getRecorderServices = function (modulePath, context) {
+  return modulePath.reduce(function (services, key) {
+    return services[key]
+  }, context.services)
+}
+var getModulePath = function (context) {
+  return context.modules ? context.modules[MODULE].path : context[MODULE].path
+}
+
+function play (context) {
+  var modulePath = getModulePath(context)
+  var services = getRecorderServices(modulePath, context)
+  services.seek(0)
+  context.state.merge(modulePath, {
     isPlaying: true
   })
-  arg.module.services.play()
+  services.play()
 }
 
-function record (arg) {
-  arg.module.state.set(['isRecording'], true)
-  arg.module.services.record({
-    paths: arg.input.paths
+function record (context) {
+  var modulePath = getModulePath(context)
+  var services = getRecorderServices(modulePath, context)
+  context.state.set(modulePath.concat('isRecording'), true)
+  services.record({
+    paths: context.input.paths
   })
 }
 
-function stop (arg) {
-  arg.module.state.merge([], {
+function stop (context) {
+  var modulePath = getModulePath(context)
+  var services = getRecorderServices(modulePath, context)
+  context.state.merge(modulePath, {
     isPlaying: false,
     isRecording: false,
     isPaused: false,
     hasRecorded: true
   })
-  arg.module.services.stop()
+  services.stop()
 }
 
-function pause (arg) {
-  arg.module.state.merge([], {
+function pause (context) {
+  var modulePath = getModulePath(context)
+  var services = getRecorderServices(modulePath, context)
+  context.state.merge(modulePath, {
     isPlaying: false,
     isPaused: true
   })
-  arg.module.services.pause()
+  services.pause()
 }
 
-function resume (arg) {
-  arg.module.state.merge([], {
+function resume (context) {
+  var modulePath = getModulePath(context)
+  var services = getRecorderServices(modulePath, context)
+  context.state.merge(modulePath, {
     isPlaying: true,
     isPaused: false
   })
-  arg.module.services.seek(arg.module.services.getCurrentSeek())
-  arg.module.services.play()
+  services.seek(services.getCurrentSeek())
+  services.play()
 }
 
 module.exports = {
