@@ -28,7 +28,8 @@ module.exports = function (options) {
       while (signalName.length) {
         signalMethodPath = signalMethodPath[signalName.shift()]
       }
-      signalMethodPath(signal.input, {
+
+      signalMethodPath(signal.payload || signal.input, {
         isRecorded: !isCatchingUp,
         immediate: true,
         branches: isCatchingUp && signal.branches
@@ -175,7 +176,8 @@ module.exports = function (options) {
         path: module.path
       }
       controller.addContextProvider(context)
-      controller.addContextProvider(require('cerebral/src/contextProviders/mutationsProvider'))
+      controller.addContextProvider(require('cerebral/providers/actionMutationsProvider'))
+      controller.addContextProvider(require('cerebral/providers/signalPayloadProvider'))
     }
 
     var state = options.state || {}

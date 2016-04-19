@@ -39,7 +39,7 @@
     "validate-commit-msg": "^1.1.1"
   },
   "peerDependencies": {
-    "cerebral": "^0.33.31 || ^0.34.0-0"
+    "cerebral": "^0.33.31 || ^0.34.0-rc.4"
   },
   "config": {
     "commitizen": {
