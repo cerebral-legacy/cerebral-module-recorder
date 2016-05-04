@@ -5,7 +5,7 @@ var getRecorderServices = function (modulePath, context) {
   }, context.services)
 }
 var getModulePath = function (context) {
-  return context.modules ? context.modules[MODULE].path : context[MODULE].path
+  return context[MODULE] ? context[MODULE].path : context.modules[MODULE].path
 }
 
 function play (context) {
