@@ -19,6 +19,7 @@ module.exports = function (options) {
     var startSeek = 0
     var catchup = null
     var lastSignal = null
+    var runningSignalCount = 0
 
     // Runs the signal synchronously
     var triggerSignal = function (signal) {
@@ -162,6 +163,11 @@ module.exports = function (options) {
 
     function onSignalStart (args) {
       if (isRecording) addSignal(args.signal)
+      if (args.signal.name.split('.') === module.name) runningSignalCount++
+    }
+
+    function onSignalEnd (args) {
+      if (args.signal.name.split('.') === module.name) runningSignalCount--
     }
 
     function getLastSignal () {
@@ -170,21 +176,23 @@ module.exports = function (options) {
 
     module.alias(MODULE)
 
-    if (controller.addContextProvider) {
-      var context = {}
-      context[MODULE] = {
-        path: module.path
-      }
-      controller.addContextProvider(context)
-      controller.addContextProvider(require('cerebral/providers/actionMutationsProvider'))
-      controller.addContextProvider(require('cerebral/providers/signalPayloadProvider'))
+    var context = {}
+    context[MODULE] = {
+      path: module.path
     }
+    controller.addContextProvider(context)
+    controller.addContextProvider(require('cerebral/providers/actionMutationsProvider'))
+    controller.addContextProvider(require('cerebral/providers/signalPayloadProvider'))
+    controller.addContextProvider(require('./providers/isExecutingProvider')({
+      count: runningSignalCount
+    }))
 
     var state = options.state || {}
     state.isRecording = false
     state.isPlaying = false
     state.isPaused = false
     state.hasRecorded = false
+    state.preventSignals = false
 
     var services = {
       getCurrentSeek: getCurrentSeek,
@@ -204,5 +212,6 @@ module.exports = function (options) {
 
     controller.on('signalTrigger', onSignalTrigger)
     controller.on('signalStart', onSignalStart)
+    controller.on('signalEnd', onSignalEnd)
   }
 }
