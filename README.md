@@ -1,5 +1,8 @@
 # cerebral-module-recorder
-The recorder module for Cerebral
+The recorder module for Cerebral 1.x
+
+In Cerebral 2 a new Recorder provider which records mutations,
+not signals is integrated in the core.
 
 [![NPM version][npm-image]][npm-url]
 [![Build status][travis-image]][travis-url]
