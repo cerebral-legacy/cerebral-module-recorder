@@ -13,7 +13,7 @@ not signals is integrated in the core.
 [![Discord][discord-image]][discord-url]
 
 ### How to use
-Go to [http://www.cerebraljs.com/documentation/cerebral-module-recorder](http://www.cerebraljs.com/documentation/cerebral-module-recorder)
+Go to [http://cerebral-website.herokuapp.com/documentation/cerebral-module-recorder](http://cerebral-website.herokuapp.com/documentation/cerebral-module-recorder)
 
 [npm-image]: https://img.shields.io/npm/v/cerebral-module-recorder.svg?style=flat
 [npm-url]: https://npmjs.org/package/cerebral-module-recorder
